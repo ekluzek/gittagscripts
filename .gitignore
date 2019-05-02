@@ -1,3 +1,10 @@
+# Local ignore
+gittagList.txt
+cron.log
+tagmailer.log
+
+
+# Perl general ignore
 !Build/
 .last_cover_stats
 /META.yml

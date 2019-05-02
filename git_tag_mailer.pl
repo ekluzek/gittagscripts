@@ -15,8 +15,7 @@ my $gh = Net::GitHub->new(
 
 # Globals
 # PLEASE make sure this is set to the absolute path of the tagList file..
-my $user = "clm";
-#my $user = "erik";
+my $user = $ENV{'USER'};
 my $tagList = "/home/$user/tagscripts/gittagList.txt";
 my $logConfig = "/home/$user/tagscripts/tagmailer.log.conf";
 my $adminEmail = 'erik@ucar.edu';
