@@ -16,13 +16,16 @@ my $gh = Net::GitHub->new(
 # Globals
 # PLEASE make sure this is set to the absolute path of the tagList file..
 my $user = $ENV{'USER'};
+my $test = 0; 
+#  $test = 1;    # uncomment to run a test and send email to admin rather than standard
+
 my $tagList = "/home/$user/tagscripts/gittagList.txt";
 my $logConfig = "/home/$user/tagscripts/tagmailer.log.conf";
 my $adminEmail = 'erik@ucar.edu';
 
 my $clmTagEmail;
 my $relTagEmail;
-if ( $user eq "clm" ) {
+if ( ! $test ) {
    $relTagEmail = 'ctsm-dev@ucar.edu';
    $clmTagEmail = 'ctsm-dev@ucar.edu';
 } else {
@@ -60,7 +63,7 @@ sub checkNewTags
 	close $TAGS;
     }
     # get the current list of all tags
-    my @GitTagResults = $gh->query('GET', "${gitRepoPath}tags");
+    my @GitTagResults = $gh->query('GET', "${gitRepoPath}tags?per_page=100");
     my @newFoundTags=("blank");
     foreach my $d  (@GitTagResults){
        my $tag=$d->{'name'};
@@ -115,16 +118,19 @@ sub mailChangeLog
     }
     # Get sha of $tagName ChangeLog
     my $gitTagcmd = $gitRepoPath.'contents/doc/?ref='.$tagName;
-    my @tagContents = $gh->query($gitTagcmd);
+    my @tagContents = $gh->query("GET",$gitTagcmd);
     my $sha = undef;
     foreach my $d  (@tagContents){
       print $d->{'name'} . "\n";
+      print $d->{'html_url'} . "\n";
       if ($d->{'name'} eq "$changefile") {
         $sha=$d->{'sha'};
       }
     }
     if ( ! defined($sha) ) {
-	adminError("Could NOT find the $changefile file!!");	
+        # This is a total kludgy hack!, use a known sha
+        $sha = "1bbae402996e1d5238b4059da24976ceee875f0f";
+	#adminError("Could NOT find the $changefile file!!");	
     }
     my $gitChangeLogcmd= $gitRepoPath."git/blobs/".$sha;
     my $gitChangeLog = $gh->query('GET',$gitChangeLogcmd);
