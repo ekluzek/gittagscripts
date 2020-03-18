@@ -19,8 +19,8 @@ my $user = $ENV{'USER'};
 my $test = 0; 
 #  $test = 1;    # uncomment to run a test and send email to admin rather than standard
 
-my $tagList = "/home/$user/tagscripts/gittagList.txt";
-my $logConfig = "/home/$user/tagscripts/tagmailer.log.conf";
+my $tagList = "/home/$user/gittagscripts/gittagList.txt";
+my $logConfig = "/home/$user/gittagscripts/tagmailer.log.conf";
 my $adminEmail = 'erik@ucar.edu';
 
 my $clmTagEmail;
