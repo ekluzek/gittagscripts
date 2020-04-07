@@ -15,11 +15,11 @@ my $gh = Net::GitHub::V3->new(
 # Globals
 # PLEASE make sure this is set to the absolute path of the tagList file..
 my $user = $ENV{'USER'};
-my $test = 0; 
+my $test = 1; 
 #  $test = 1;    # uncomment to run a test and send email to admin rather than standard
 
-my $tagList = "/home/$user/tagscripts/gittagList.txt";
-my $logConfig = "/home/$user/tagscripts/tagmailer.log.conf";
+my $tagList = "/home/$user/gittagscripts/gittagList.txt";
+my $logConfig = "/home/$user/gittagscripts/tagmailer.log.conf";
 my $adminEmail = 'erik@ucar.edu';
 
 my $clmTagEmail;
@@ -70,6 +70,7 @@ sub checkNewTags
     }
     shift @newFoundTags;
     print Dumper \@newFoundTags;
+    return @newFoundTags;
 }
 
 sub updateTagList
@@ -100,6 +101,7 @@ sub mailChangeLog
       $changefile = "release-clm5.0.ChangeLog";
     }
     # Get sha of $tagName ChangeLog
+    print "TagName = $tagName\n";
     my $gitTagcmd = $gitRepoPath.'contents/doc/?ref='.$tagName;
     my @tagContents = $gh->query("GET",$gitTagcmd);
     my $sha = undef;
@@ -113,7 +115,7 @@ sub mailChangeLog
     if ( ! defined($sha) ) {
         # This is a total kludgy hack!, use a known sha
         $sha = "1bbae402996e1d5238b4059da24976ceee875f0f";
-	#adminError("Could NOT find the $changefile file!!");	
+	adminError("Could NOT find the $changefile file!!");	
     }
     my $gitChangeLogcmd= $gitRepoPath."git/blobs/".$sha;
     my $gitChangeLog = $gh->query('GET',$gitChangeLogcmd);
@@ -188,7 +190,11 @@ sub adminError
 
 sub main
 {
-    checkNewTags();
+    my @newTags = checkNewTags();
+    foreach my $tag(@newTags)
+    {
+        &mailChangeLog($tag);
+    }
 }
 
 main(@ARGV) unless caller;
