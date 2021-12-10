@@ -19,8 +19,8 @@ my $user = $ENV{'USER'};
 my $test = 0; 
 #  $test = 1;    # uncomment to run a test and send email to admin rather than standard
 
-my $tagList = "/home/$user/tagscripts/gittagList.txt";
-my $logConfig = "/home/$user/tagscripts/tagmailer.log.conf";
+my $tagList = "/home/$user/gittagscripts/gittagList.txt";
+my $logConfig = "/home/$user/gittagscripts/tagmailer.log.conf";
 my $adminEmail = 'erik@ucar.edu';
 
 my $clmTagEmail;
@@ -36,7 +36,7 @@ if ( ! $test ) {
 
 my $clmName = 'CTSM Gatekeeper';
 my $relName = 'CTSM Release Candidate Gatekeeper';
-my $gitRepoPath = "/repos/ESCOMP/ctsm/";
+my $gitRepoPath = "/repos/ESCOMP/CTSM/";
 my $tagsSent;
 my $maxTagCount = 8;
 
@@ -117,7 +117,7 @@ sub mailChangeLog
       $changefile = "release-clm5.0.ChangeLog";
     }
     # Get sha of $tagName ChangeLog
-    my $gitTagcmd = $gitRepoPath.'contents/doc/?ref='.$tagName;
+    my $gitTagcmd = $gitRepoPath.'contents/doc?ref='.$tagName;
     my @tagContents = $gh->query("GET",$gitTagcmd);
     my $sha = undef;
     foreach my $d  (@tagContents){
@@ -130,7 +130,7 @@ sub mailChangeLog
     if ( ! defined($sha) ) {
         # This is a total kludgy hack!, use a known sha
         $sha = "1bbae402996e1d5238b4059da24976ceee875f0f";
-	#adminError("Could NOT find the $changefile file!!");	
+	adminError("Could NOT find the $changefile file!!");	
     }
     my $gitChangeLogcmd= $gitRepoPath."git/blobs/".$sha;
     my $gitChangeLog = $gh->query('GET',$gitChangeLogcmd);
