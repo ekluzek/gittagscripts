@@ -1,0 +1,7 @@
+#
+# Run the python formatting in check mode
+#
+uses: jpetrucciani/black-check@master
+with:
+  path: python
+  black_flags: '--exclude ./F90/'
