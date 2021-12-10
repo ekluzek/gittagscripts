@@ -10,5 +10,5 @@ jobs:
      steps:
         - uses: jpetrucciani/black-check@master
           with:
-             path: python
+             #path: python
              black_flags: '--exclude ./F90/'
