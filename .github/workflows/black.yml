@@ -1,7 +1,14 @@
+name: push black workflow
 #
 # Run the python formatting in check mode
 #
-uses: jpetrucciani/black-check@master
-with:
-  path: python
-  black_flags: '--exclude ./F90/'
+on: push
+
+jobs:
+  black-check:
+     runs-on: ubuntu-latest
+     steps:
+        - uses: jpetrucciani/black-check@master
+          with:
+             path: python
+             black_flags: '--exclude ./F90/'
